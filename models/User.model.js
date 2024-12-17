@@ -18,6 +18,25 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Name is required."],
     },
+
+    userImage: {
+      type: String,
+      // default img if user does not provide profile photo
+      default: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png",
+    },
+
+    drawings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Drawing",
+      },
+    ],
+    orders: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Order",
+      },
+    ],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
