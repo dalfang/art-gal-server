@@ -19,8 +19,19 @@ const saltRounds = 10;
 //TO DO
 //set up cloudinary for user img
 
+const uploader = require("../config/cloudinary.config.js");
+const Order = require("../models/Order.model.js");
+const Drawing = require("../models/Drawing.model.js");
+
 // POST /auth/signup  - Creates a new user in the database
-router.post("/signup", (req, res, next) => {
+router.post("/signup", uploader.single("imageUrl"), async (req, res, next) => {
+  let userImage;
+  if (!req.file) {
+    console.log("No image was selected");
+  } else {
+    userImage = req.file.path;
+  }
+
   const { email, password, name } = req.body;
 
   // Check if email or password or name are provided as empty strings
@@ -61,7 +72,12 @@ router.post("/signup", (req, res, next) => {
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name });
+      return User.create({
+        email,
+        password: hashedPassword,
+        name,
+        userImage: userImage,
+      });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
@@ -129,6 +145,25 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
 
   // Send back the token payload object containing the user data
   res.status(200).json(req.payload);
+});
+
+router.get("/profile/:userId", isAuthenticated, async (req, res, next) => {
+  try {
+    const currentUser = await User.findById(req.payload._id);
+    const currentOrder = await Order.find({ owner: req.payload._id });
+    const currentDrawing = await Drawing.find({ owner: req.payload._id });
+
+    res.status(200).json({
+      currentUser,
+      userImage: currentUser.userImage,
+      currentOrder,
+      currentDrawing,
+      createdAt: currentUser.createdAt,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 });
 
 module.exports = router;
