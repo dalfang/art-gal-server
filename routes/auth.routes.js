@@ -25,7 +25,7 @@ const Drawing = require("../models/Drawing.model.js");
 
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", uploader.single("imageUrl"), async (req, res, next) => {
-  let userImage;
+  let userImage = "";
   if (!req.file) {
     console.log("No image was selected");
   } else {
@@ -94,57 +94,50 @@ router.post("/signup", uploader.single("imageUrl"), async (req, res, next) => {
 });
 
 // POST  /auth/login - Verifies email and password and returns a JWT
-router.post("/login", (req, res, next) => {
-  const { email, password } = req.body;
-
-  // Check if email or password are provided as empty string
-  if (email === "" || password === "") {
-    res.status(400).json({ message: "Provide email and password." });
-    return;
-  }
-
-  // Check the users collection if a user with the same email exists
-  User.findOne({ email })
-    .then((foundUser) => {
-      if (!foundUser) {
-        // If the user is not found, send an error response
-        res.status(401).json({ message: "User not found." });
-        return;
-      }
-
-      // Compare the provided password with the one saved in the database
-      const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
-
-      if (passwordCorrect) {
-        // Deconstruct the user object to omit the password
-        const { _id, email, name } = foundUser;
-
-        // Create an object that will be set as the token payload
-        const payload = { _id, email, name };
-
-        // Create a JSON Web Token and sign it
-        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+router.post("/login", async (req, res) => {
+  try {
+    const foundUser = await User.findOne({ email: req.body.email });
+    if (foundUser) {
+      const doesPasswordMatch = bcrypt.compareSync(
+        req.body.password,
+        foundUser.password
+      );
+      if (doesPasswordMatch) {
+        const loggedInUser = {
+          _id: foundUser._id,
+          username: foundUser.username,
+          userImage: foundUser.userImage,
+        };
+        const authToken = jwt.sign(loggedInUser, process.env.TOKEN_SECRET, {
           algorithm: "HS256",
           expiresIn: "6h",
         });
-
-        // Send the token as the response
-        res.status(200).json({ authToken: authToken });
+        res
+          .status(200)
+          .json({ message: "Login successful", authToken: authToken });
       } else {
-        res.status(401).json({ message: "Unable to authenticate the user" });
+        res.status(500).json({
+          errorMessage: "Invalid password",
+        });
       }
-    })
-    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+    } else {
+      res.status(500).json({
+        errorMessage: "Invalid email",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client
-router.get("/verify", isAuthenticated, (req, res, next) => {
-  // If JWT token is valid the payload gets decoded by the
-  // isAuthenticated middleware and is made available on `req.payload`
-  console.log(`req.payload`, req.payload);
-
-  // Send back the token payload object containing the user data
-  res.status(200).json(req.payload);
+router.get("/verify", isAuthenticated, (req, res) => {
+  console.log("made it to the verify route", req.payload);
+  if (req.payload) {
+    res.status(200).json({ message: "Token valid", user: req.payload });
+  } else {
+    res.status(401).json({ message: "Invalid headers" });
+  }
 });
 
 router.get("/profile/:userId", isAuthenticated, async (req, res, next) => {

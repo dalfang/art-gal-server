@@ -3,7 +3,7 @@ const Drawing = require("../models/Drawing.model");
 const User = require("../models/User.model");
 const Order = require("../models/Order.model");
 const { uploadDrawing } = require("../middleware/apiUtils");
-const uploader = require("../middleware/cloudinary.config.js");
+const uploader = require("../config/cloudinary.config.js");
 
 // Helper function to update user's drawings
 async function updateUserDrawings(userId, drawingId, action) {
