@@ -27,6 +27,9 @@ app.use("/drawings", drawingRoutes);
 const orderRoutes = require("./routes/orders.routes");
 app.use("/orders", orderRoutes);
 
+const galleriesRoutes = require("./routes/gallery.routes");
+app.use("/galleries", galleriesRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 

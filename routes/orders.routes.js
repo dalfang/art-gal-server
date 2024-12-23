@@ -10,11 +10,17 @@ const { uploadDrawing } = require("../middleware/apiUtils");
 // Price map for products
 //TO DO ADD product
 const PRICE_MAP = {
+  mug: 5.5,
   rug: 7.5,
 };
 
 // Product configurations for image merging
 const PRODUCT_META = {
+  mug: {
+    img: "https://res.cloudinary.com/dzymhjyvm/image/upload/v1719829589/mug_qymqid.png",
+    meta: { height: 170, x: 240, y: 200 },
+  },
+
   rug: {
     img: "https://res.cloudinary.com/dzymhjyvm/image/upload/v1719829589/mug_qymqid.png",
     meta: { height: 170, x: 240, y: 200 },
