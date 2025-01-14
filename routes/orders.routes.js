@@ -8,13 +8,14 @@ const cloudinary = require("cloudinary").v2;
 const { uploadDrawing } = require("../middleware/apiUtils");
 
 // Price map for products
-//TO DO ADD product
+//TO DO
 const PRICE_MAP = {
   mug: 5.5,
   rug: 7.5,
 };
 
 // Product configurations for image merging
+//TO DO
 const PRODUCT_META = {
   mug: {
     img: "https://res.cloudinary.com/dzymhjyvm/image/upload/v1719829589/mug_qymqid.png",

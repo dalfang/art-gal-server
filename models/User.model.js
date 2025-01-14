@@ -31,6 +31,8 @@ const userSchema = new Schema(
         ref: "Drawing",
       },
     ],
+
+    favorites: [{ type: Schema.Types.ObjectId, ref: "Gallery" }],
     orders: [
       {
         type: Schema.Types.ObjectId,
