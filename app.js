@@ -30,6 +30,9 @@ app.use("/orders", orderRoutes);
 const galleriesRoutes = require("./routes/gallery.routes");
 app.use("/galleries", galleriesRoutes);
 
+const favoriteRoutes = require("./routes/favorite.routes");
+app.use("/favorites", favoriteRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 

@@ -16,6 +16,7 @@ const orderSchema = new Schema(
     shippingAddress: {
       type: String,
     },
+
     product: {
       type: String,
       enum: ["20*30", "30*40", "40*60", "50*70"],
