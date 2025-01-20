@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
-const Gallery = require("../models/Gallery.model"); // Adjusted to Gallery model
+const Gallery = require("../models/Gallery.model");
 
 // Get all galleries
 router.get("/all-galleries", async (req, res) => {

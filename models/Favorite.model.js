@@ -2,13 +2,13 @@ const { Schema, model, default: mongoose } = require("mongoose");
 
 const favoriteSchema = new mongoose.Schema(
   {
-    user: {
+    owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    drawing: {
+    gallery: {
       type: Schema.Types.ObjectId,
-      ref: "Drawing",
+      ref: "Gallery",
     },
   },
   {
