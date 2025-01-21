@@ -40,11 +40,11 @@ router.delete("/delete-favorite/:favoriteId", async (req, res) => {
   }
 });
 
-//Add favorite
-
-// Add favorite
 router.post("/add-favorite/", async (req, res) => {
   const { userId, galleryId } = req.body;
+
+  console.log("Received data:", req.body);
+
   try {
     const addFavorite = await Favorite.create({
       gallery: galleryId,
@@ -52,8 +52,10 @@ router.post("/add-favorite/", async (req, res) => {
     });
     res.status(201).json(addFavorite);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Failed to add favorite" });
+    console.error("Error adding favorite:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to add favorite", error: error.message });
   }
 });
 
